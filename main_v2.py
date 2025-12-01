@@ -723,7 +723,7 @@ def render_dashboard(results_df: pd.DataFrame):
                 ax.spines['bottom'].set_color('#e2e8f0')
                 ax.spines['left'].set_color('#e2e8f0')
                 ax.invert_yaxis()
-                ax.set_xlim(-1.2, 1.2)
+                ax.set_xlim(0, 1.19)
                 
                 for i, v in enumerate(avg_scores.values):
                     ax.text(v + 0.05 if v >= 0 else v - 0.15, i, f"{v:.2f}", 
@@ -885,7 +885,7 @@ def render_dashboard(results_df: pd.DataFrame):
 # =============================================================================
 # 6️⃣ TAB: INPUT REVIEW & BATCH FILE
 # =============================================================================
-tab1, tab2 = st.tabs(["✍️ Single Review", "📁 Batch Analysis"])
+tab1, tab2 = st.tabs(["Single Review", "Batch Analysis"])
 
 # --- TAB 1: SINGLE REVIEW ---
 with tab1:
@@ -898,11 +898,11 @@ with tab1:
         label_visibility="collapsed",
     )
 
-    col_spacer, col_analyze, col_clear = st.columns([5, 1.5, 1])
+    col_spacer, col_analyze, col_clear = st.columns([5, 1, 1])
     with col_analyze:
-        analyze = st.button("🔍 Analyze", use_container_width=True)
+        analyze = st.button("Analyze", use_container_width=True)
     with col_clear:
-        clear = st.button("🗑️ Clear", use_container_width=True, type="secondary")
+        clear = st.button("Clear", use_container_width=True, type="secondary")
     
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -940,6 +940,18 @@ with tab2:
                 Supports batch processing of multiple reviews at once
             </div>
         </div>
+        
+        <div style="background: rgba(102, 126, 234, 0.08); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; padding: 16px 20px; margin-top: 16px; text-align: left;">
+            <div style="font-weight: 600; color: #667eea; font-size: 13px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                <span>📋</span> File Format Requirements
+            </div>
+            <ul style="margin: 0; padding-left: 20px; color: #4a5568; font-size: 13px; line-height: 1.8;">
+                <li>The file must be a <strong>.txt</strong> file.</li>
+                <li>Each line represents exactly <strong>one review</strong>.</li>
+                <li>Empty lines will be <strong>ignored automatically</strong>.</li>
+                <li>Encoding should be <strong>UTF-8</strong> to avoid character errors.</li>
+            </ul>
+        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -950,7 +962,7 @@ with tab2:
 
     col1, col2, col3 = st.columns([1, 1, 1])
     with col2:
-        run_batch = st.button("🚀 Run Batch Analysis", use_container_width=True)
+        run_batch = st.button("Run Batch Analysis", use_container_width=True)
     
     if run_batch:
         if uploaded_file is None:
@@ -998,6 +1010,6 @@ with tab2:
                     final_df = pd.concat(all_results, ignore_index=True)
                     st.success(f"✅ Analysis complete! Found {len(final_df)} aspects across {len(reviews)} reviews.")
                     render_dashboard(final_df)
-
+                    
 # Đóng div main-container
 st.markdown("</div>", unsafe_allow_html=True)
