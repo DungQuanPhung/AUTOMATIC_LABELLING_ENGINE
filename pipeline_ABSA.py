@@ -28,8 +28,8 @@ from Extract_Polarity_lib import detect_polarity
 def load_qwen_model():
     llama = Llama(
         model_path=QWEN_MODEL_PATH,
-        n_gpu_layers=-1,
-        n_ctx=4096,
+        n_gpu_layers=0,
+        n_ctx=2048,
         verbose=True
     )   
     return llama, None  # Trả về None cho tokenizer vì không cần thiết với llama
