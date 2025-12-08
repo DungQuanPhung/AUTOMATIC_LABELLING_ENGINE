@@ -1,5 +1,6 @@
 import os
 import torch
+
 # ============== CẤU HÌNH MÔ HÌNH ==============
 
 # Thư mục gốc của app
