@@ -1,0 +1,50 @@
+# Model files and cache (too large for GitHub)
+model_cache/
+qwen3-4b/
+roberta_lora_goal/
+*.gguf
+*.safetensors
+*.cache
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

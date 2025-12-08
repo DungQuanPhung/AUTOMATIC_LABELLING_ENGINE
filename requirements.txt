@@ -1,0 +1,15 @@
+streamlit
+transformers>=4.36.0
+accelerate>=0.25.0
+optimum>=1.16.0
+--extra-index-url https://huggingface.github.io/llama-cpp-python-wheels/cu124
+llama-cpp-python
+torch>=2.0.0
+wordcloud
+matplotlib
+pandas
+sentencepiece
+protobuf
+scikit-learn
+datasets
+peft
