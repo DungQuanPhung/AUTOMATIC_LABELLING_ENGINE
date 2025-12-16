@@ -7,7 +7,7 @@ import torch
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Mô hình LLM chính (Qwen)
-QWEN_MODEL_PATH = os.path.join(BASE_DIR, "qwen1_5-1_8b-chat-q4_k_m.gguf")
+QWEN_MODEL_PATH = os.path.join(BASE_DIR, "qwen2.5-7b-instruct-q3_k_m.gguf")
 
 # Mô hình Category (RoBERTa)
 CATEGORY_MODEL_PATH = os.path.join(BASE_DIR, "category_model")
