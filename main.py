@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import random
+from matplotlib.patches import FancyBboxPatch
+from matplotlib.lines import Line2D
 from wordcloud import WordCloud
 from io import StringIO
 
@@ -295,17 +298,16 @@ header[data-testid="stHeader"] {
 }
 
 .stTabs [data-baseweb="tab-list"] {
-    gap: 8px;
-    background: var(--bg-card);
-    padding: 8px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    backdrop-filter: blur(20px);
+    gap: 4px;
+    background: #f8fafc;
+    padding: 6px 8px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
 }
 
 .stTabs [data-baseweb="tab"] {
-    border-radius: 12px !important;
-    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    padding: 10px 18px !important;
     background: transparent !important;
     border: none !important;
 }
@@ -314,58 +316,58 @@ header[data-testid="stHeader"] {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 14px !important;
     font-weight: 600 !important;
-    color: var(--text-secondary) !important;
+    color: #64748b !important;
     transition: all 0.3s ease !important;
 }
 
 .stTabs button[role="tab"]:hover {
-    color: var(--text-primary) !important;
-    background: rgba(102, 126, 234, 0.08) !important;
+    color: #1f2937 !important;
+    background: #e2e8f0 !important;
 }
 
 .stTabs button[aria-selected="true"] {
-    background: var(--primary-gradient) !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+    background: #e0e7ff !important;
+    color: #4338ca !important;
+    box-shadow: none !important;
 }
 
 /* ===== INPUT CARD ===== */
 .input-section {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    padding: 28px;
-    border: 1px solid var(--border-color);
-    margin-top: 24px;
-    transition: all 0.3s ease;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    margin-top: 12px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-section:hover {
-    border-color: var(--border-glow);
-    box-shadow: var(--shadow-glow);
+    border-color: #cbd5e1;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
 }
 
 /* Textarea styling */
 .stTextArea textarea {
     background: #ffffff !important;
-    border: 2px solid var(--border-color) !important;
-    border-radius: 16px !important;
-    color: var(--text-primary) !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    color: #0f172a !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
     font-size: 15px !important;
-    padding: 18px 20px !important;
-    transition: all 0.3s ease !important;
-    line-height: 1.6 !important;
+    padding: 16px 18px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    line-height: 1.55 !important;
 }
 
 .stTextArea textarea:focus {
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+    border-color: #94a3b8 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12) !important;
     background: #ffffff !important;
 }
 
 .stTextArea textarea::placeholder {
-    color: var(--text-muted) !important;
+    color: #94a3b8 !important;
 }
 
 /* ===== BUTTONS ===== */
@@ -375,35 +377,35 @@ header[data-testid="stHeader"] {
     font-size: 14px !important;
     padding: 12px 28px !important;
     border-radius: 12px !important;
-    border: none !important;
+    border: 1px solid transparent !important;
     cursor: pointer !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.2s ease !important;
     position: relative !important;
     overflow: hidden !important;
 }
 
 .stButton > button[kind="primary"], 
 .stButton > button:first-of-type {
-    background: var(--primary-gradient) !important;
+    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%) !important;
     color: white !important;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+    box-shadow: 0 6px 14px rgba(99, 102, 241, 0.25) !important;
 }
 
 .stButton > button[kind="primary"]:hover,
 .stButton > button:first-of-type:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 10px 18px rgba(99, 102, 241, 0.3) !important;
 }
 
 .stButton > button[kind="secondary"] {
-    background: #ffffff !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
+    background: #e5e7eb !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
 }
 
 .stButton > button[kind="secondary"]:hover {
-    background: #f8fafc !important;
-    border-color: var(--border-glow) !important;
+    background: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
 }
 
 /* ===== RESULT SECTION ===== */
@@ -677,14 +679,72 @@ def ensure_qwen_model_ready(models, announce=False):
     return ready
 
 
+def compute_overall_sentiment(results_df: pd.DataFrame):
+    pol_col = "Polarity" if "Polarity" in results_df.columns else "polarity"
+    score_col = "Category Score" if "Category Score" in results_df.columns else "category_score"
+
+    overall_score = None
+    dominant_sentiment = None
+
+    if score_col in results_df.columns:
+        avg_score = results_df[score_col].mean()
+        if pd.notna(avg_score):
+            overall_score = max(0.0, min(avg_score * 10, 10.0))
+
+    if pol_col in results_df.columns and overall_score is None:
+        mapping = {"positive": 1.0, "neutral": 0.5, "negative": 0.0}
+        pol_series = results_df[pol_col].astype(str).str.lower().str.strip()
+        mapped_scores = pol_series.map(mapping)
+        mapped_scores = mapped_scores.dropna()
+        if not mapped_scores.empty:
+            overall_score = max(0.0, min(mapped_scores.mean() * 10, 10.0))
+
+    if pol_col in results_df.columns:
+        pol_series = results_df[pol_col].astype(str).str.lower().str.strip()
+        if not pol_series.empty:
+            dominant_sentiment = pol_series.mode().iloc[0]
+
+    return overall_score, dominant_sentiment
+
+
+WORDCLOUD_PALETTE = [
+    "#2563eb",
+    "#10b981",
+    "#f97316",
+    "#a855f7",
+    "#ec4899",
+    "#0ea5e9",
+    "#fbbf24",
+    "#14b8a6",
+    "#94a3b8",
+]
+
+
+def wc_color_func(*args, **kwargs):
+    return random.choice(WORDCLOUD_PALETTE)
+
+
 # =============================================================================
 # 5️⃣ HÀM HIỂN THỊ DASHBOARD
 # =============================================================================
 def render_dashboard(results_df: pd.DataFrame):
     st.markdown('<div class="result-section">', unsafe_allow_html=True)
 
+    overall_score, dominant_sentiment = compute_overall_sentiment(results_df)
+    if overall_score is not None:
+        st.markdown(
+            f"""
+            <div class="result-card" style="background:#0f172a;color:#e5e7eb;margin-bottom:16px;">
+                <div style="font-size:12px; letter-spacing:0.05em; text-transform: uppercase; color:#cbd5e1;">Overall Sentiment Score</div>
+                <div style="font-size:32px; font-weight:800; margin-top:6px;">{overall_score:.1f}/10</div>
+                <div style="font-size:13px; color:#94a3b8; margin-top:4px;">Dominant: {dominant_sentiment.title() if dominant_sentiment else "N/A"}</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
     # Charts row
-    chart_col1, chart_col2 = st.columns(2)
+    chart_col1, chart_col2 = st.columns([1, 1])
 
     with chart_col1:
         # Check với cả lowercase và title case column names
@@ -696,10 +756,10 @@ def render_dashboard(results_df: pd.DataFrame):
         if has_category_cols:
             st.markdown(
                 """
-                <div class="result-card">
+                <div class="result-card" style="background:#0f172a;color:#e5e7eb;">
                     <div class="result-card-header">
                         <div class="result-card-icon chart">📊</div>
-                        <div class="result-card-title">Category Score Overview</div>
+                        <div class="result-card-title" style="color:#e5e7eb;">Category Score</div>
                     </div>
                 </div>
                 """,
@@ -710,34 +770,84 @@ def render_dashboard(results_df: pd.DataFrame):
             cat_col = "Category" if "Category" in results_df.columns else "category"
             score_col = "Category Score" if "Category Score" in results_df.columns else "category_score"
             
+            # Tính toán và sắp xếp dữ liệu
             avg_scores = (
                 results_df.dropna(subset=[cat_col])
                 .groupby(cat_col)[score_col]
                 .mean()
                 .sort_values(ascending=False)
             )
+
             if not avg_scores.empty:
-                fig, ax = plt.subplots(figsize=(5, 3.5))
-                fig.patch.set_facecolor('#ffffff')
-                ax.set_facecolor('#ffffff')
+                scores_10 = (avg_scores * 10).clip(0, 10)
                 
-                # Create gradient-like bars
-                colors = plt.cm.RdYlGn([(v + 1) / 2 for v in avg_scores.values])
-                bars = ax.barh(avg_scores.index.tolist(), avg_scores.values.tolist(), color=colors, height=0.6)
+                # --- VẼ BIỂU ĐỒ STYLE PROGRESS BAR ---
+                fig, ax = plt.subplots(figsize=(5, 3.5), facecolor="#0f172a")
+                ax.set_facecolor("#0f172a")
+
+                y_positions = range(len(scores_10))
+                bar_height = 0.25  # Độ dày thanh bar
+
+                # 1. Vẽ thanh nền (Track) - Màu xám tối, full 10 điểm
+                ax.barh(
+                    y_positions, 
+                    [10] * len(scores_10), 
+                    height=bar_height,
+                    color="#1e293b",  # Màu nền track (slate-800)
+                    align='center',
+                    edgecolor="none"
+                )
+
+                # 2. Vẽ thanh điểm (Value) - Màu xanh dương
+                ax.barh(
+                    y_positions, 
+                    scores_10.to_numpy(), 
+                    height=bar_height,
+                    color="#3b82f6",  # Màu xanh giống trong ảnh (blue-500)
+                    align='center',
+                    edgecolor="none"
+                )
+
+                # 3. Cấu hình trục Y (Labels Category)
+                ax.set_yticks(y_positions)
+                ax.set_yticklabels(
+                    scores_10.index, 
+                    color="#e5e7eb", 
+                    fontsize=12, 
+                    fontweight="600",
+                    family='sans-serif'
+                )
                 
-                ax.set_xlabel("Average Score", color='#4a5568', fontsize=10)
-                ax.tick_params(colors='#4a5568', labelsize=9)
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                ax.spines['bottom'].set_color('#e2e8f0')
-                ax.spines['left'].set_color('#e2e8f0')
-                ax.invert_yaxis()
-                ax.set_xlim(0, 1.19)
+                # Loại bỏ tick mark ở trục Y để label sát lề hơn
+                ax.tick_params(axis='y', length=0, pad=10)
+
+                # 4. Hiển thị điểm số bên phải (thẳng hàng)
+                # Đặt text ở vị trí x=10.5 (ngoài thanh bar nền)
+                for i, value in enumerate(scores_10.values):
+                    ax.text(
+                        10.5,           # X position
+                        i,              # Y position
+                        f"{value:.1f}", 
+                        va="center", 
+                        ha="left",
+                        color="#e5e7eb",
+                        fontweight="bold",
+                        fontsize=12
+                    )
+
+                # 5. Cleanup giao diện (Xóa viền, xóa trục X)
+                ax.set_xlim(0, 12)  # Mở rộng giới hạn X để chứa text điểm số
+                ax.get_xaxis().set_visible(False) # Ẩn trục X hoàn toàn
                 
-                for i, v in enumerate(avg_scores.values):
-                    ax.text(v + 0.05 if v >= 0 else v - 0.15, i, f"{v:.2f}", 
-                           va="center", color='#1a202c', fontsize=9, fontweight='bold')
+                # Ẩn toàn bộ viền (spines)
+                for spine in ax.spines.values():
+                    spine.set_visible(False)
                 
+                # Đảo ngược trục Y để Category điểm cao nhất nằm trên cùng
+                # (Nếu muốn theo thứ tự sort_values bên trên)
+                # Hoặc nếu muốn khớp thứ tự dataframe thì bỏ dòng này tùy nhu cầu
+                # ax.invert_yaxis() 
+
                 plt.tight_layout()
                 st.pyplot(fig)
                 plt.close()
@@ -753,51 +863,102 @@ def render_dashboard(results_df: pd.DataFrame):
         if pol_col in results_df.columns and not results_df[pol_col].empty:
             st.markdown(
                 """
-                <div class="result-card">
+                <div class="result-card" style="background:#0f172a;color:#e5e7eb;">
                     <div class="result-card-header">
                         <div class="result-card-icon pie">🥧</div>
-                        <div class="result-card-title">Polarity Distribution</div>
+                        <div class="result-card-title" style="color:#e5e7eb;">Polarity Score</div>
                     </div>
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-            polarity_share = (
-                results_df[pol_col].fillna("Unknown").value_counts(normalize=True).mul(100)
-            )
-            
-            fig, ax = plt.subplots(figsize=(4, 3.5))
-            fig.patch.set_facecolor('#ffffff')
-            ax.set_facecolor('#ffffff')
-            
-            # Custom colors for polarity - vibrant for light theme
-            color_map = {
-                'positive': '#10b981',
-                'negative': '#ef4444', 
-                'neutral': '#3b82f6',
-                'Unknown': '#9ca3af'
-            }
-            colors = [color_map.get(str(p).lower(), '#667eea') for p in polarity_share.index]
-            
-            wedges, texts, autotexts = ax.pie(
-                polarity_share.values.tolist(),
-                labels=polarity_share.index.tolist(),
-                autopct="%1.1f%%",
-                startangle=140,
-                colors=colors,
-                wedgeprops=dict(width=0.7, edgecolor='#ffffff', linewidth=3),
-                textprops=dict(color='#1a202c', fontsize=10),
-            )
-            
-            for autotext in autotexts:
-                autotext.set_color('#1a202c')
-                autotext.set_fontweight('bold')
-                autotext.set_fontsize(9)
-            
-            ax.axis("equal")
-            plt.tight_layout()
-            st.pyplot(fig)
-            plt.close()
+            pol_series = results_df[pol_col].astype(str).str.lower().str.strip()
+            counts = pol_series.value_counts()
+
+            label_order = ["positive", "neutral", "negative"]
+            values = [counts.get(lab, 0) for lab in label_order]
+            unknown_count = max(0, counts.sum() - sum(values))
+            labels = label_order + (["unknown"] if unknown_count > 0 else [])
+            values = values + ([unknown_count] if unknown_count > 0 else [])
+
+            total = sum(values)
+            if total > 0:
+                percentages = [v / total * 100 for v in values]
+                color_map = {
+                    "positive": "#16c15d",
+                    "neutral": "#8c93a8",
+                    "negative": "#f66b3c",
+                    "unknown": "#94a3b8",
+                }
+                colors = [color_map.get(lab, "#667eea") for lab in labels]
+
+                fig, ax = plt.subplots(figsize=(3.8, 3.8), facecolor="#0f172a")
+                ax.set_facecolor("#0f172a")
+
+                pie_result = ax.pie(
+                    percentages,
+                    colors=colors,
+                    startangle=90,
+                    counterclock=False,
+                    wedgeprops=dict(width=0.25, edgecolor="none", linewidth=0),
+                )
+                wedges = pie_result[0]
+
+                center_idx = percentages.index(max(percentages))
+                center_label = labels[center_idx].title()
+                center_color = colors[center_idx]
+                ax.text(
+                    0,
+                    0.04,
+                    f"{percentages[center_idx]:.0f}%",
+                    ha="center",
+                    va="center",
+                    fontsize=22,
+                    fontweight="bold",
+                    color=center_color,
+                )
+                ax.text(
+                    0,
+                    -0.18,
+                    center_label,
+                    ha="center",
+                    va="center",
+                    fontsize=10,
+                    color="#cbd5e1",
+                )
+
+                legend_labels = [f"{lab.title():<8} {pct:>4.0f}%" for lab, pct in zip(labels, percentages)]
+                legend_handles = [
+                    Line2D(
+                        [0],
+                        [0],
+                        marker="o",
+                        color="none",
+                        markerfacecolor=color_map.get(lab, "#667eea"),
+                        markeredgecolor=color_map.get(lab, "#667eea"),
+                        markersize=9,
+                        markeredgewidth=1.2,
+                    )
+                    for lab in labels
+                ]
+                ax.legend(
+                    legend_handles,
+                    legend_labels,
+                    loc="lower center",
+                    bbox_to_anchor=(0.5, -0.3),
+                    ncol=1,
+                    frameon=False,
+                    labelcolor="#e5e7eb",
+                    fontsize=10,
+                    labelspacing=1.2,
+                )
+
+                ax.axis("equal")
+                plt.tight_layout()
+                st.pyplot(fig)
+                plt.close()
+            else:
+                st.info("📭 No polarity data available yet.")
 
     # ===== STATISTICS TABLE =====
     st.markdown(
@@ -875,25 +1036,25 @@ def render_dashboard(results_df: pd.DataFrame):
     # ===== WORDCLOUD SECTION =====
     st.markdown(
         """
-        <div class="result-card" style="margin-top: 24px;">
+        <div class="result-card" style="margin-top: 24px; background:#0f172a; color:#e5e7eb;">
             <div class="result-card-header">
                 <div class="result-card-icon chart">☁️</div>
-                <div class="result-card-title">Word Clouds</div>
+                <div class="result-card-title" style="color:#e5e7eb;">Trending Topics & Keywords</div>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    wc_col1, wc_col2 = st.columns(2)
+    wc_col1, wc_col2 = st.columns([1, 1])
 
     with wc_col1:
         st.markdown(
             """
-            <div class="result-card">
+            <div class="result-card" style="background:#0f172a; color:#e5e7eb;">
                 <div class="result-card-header">
                     <div class="result-card-icon chart">🔤</div>
-                    <div class="result-card-title">Term Word Cloud</div>
+                    <div class="result-card-title" style="color:#e5e7eb;">Term Word Cloud</div>
                 </div>
             """,
             unsafe_allow_html=True,
@@ -905,17 +1066,19 @@ def render_dashboard(results_df: pd.DataFrame):
 
             if all_terms.strip():
                 wordcloud = WordCloud(
-                    width=500,
-                    height=320,
-                    background_color='white',
-                    colormap='viridis',
+                    width=460,
+                    height=300,
+                    background_color="#0f172a",
+                    color_func=wc_color_func,
                     max_words=80,
+                    collocations=False,
                     contour_width=1,
                     contour_color='steelblue'
                 ).generate(all_terms)
 
-                fig, ax = plt.subplots(figsize=(5, 3.4))
-                fig.patch.set_facecolor('#ffffff')
+                fig, ax = plt.subplots(figsize=(4.8, 3.2))
+                fig.patch.set_facecolor('#0f172a')
+                ax.set_facecolor('#0f172a')
                 ax.imshow(wordcloud, interpolation='bilinear')
                 ax.axis('off')
 
@@ -931,10 +1094,10 @@ def render_dashboard(results_df: pd.DataFrame):
     with wc_col2:
         st.markdown(
             """
-            <div class="result-card">
+            <div class="result-card" style="background:#0f172a; color:#e5e7eb;">
                 <div class="result-card-header">
                     <div class="result-card-icon chart">💬</div>
-                    <div class="result-card-title">Opinion Word Cloud</div>
+                    <div class="result-card-title" style="color:#e5e7eb;">Opinion Word Cloud</div>
                 </div>
             """,
             unsafe_allow_html=True,
@@ -946,17 +1109,19 @@ def render_dashboard(results_df: pd.DataFrame):
 
             if all_opinions.strip():
                 wordcloud = WordCloud(
-                    width=500,
-                    height=320,
-                    background_color='white',
-                    colormap='plasma',
+                    width=460,
+                    height=300,
+                    background_color="#0f172a",
+                    color_func=wc_color_func,
                     max_words=80,
+                    collocations=False,
                     contour_width=1,
                     contour_color='steelblue'
                 ).generate(all_opinions)
 
-                fig, ax = plt.subplots(figsize=(5, 3.4))
-                fig.patch.set_facecolor('#ffffff')
+                fig, ax = plt.subplots(figsize=(4.8, 3.2))
+                fig.patch.set_facecolor('#0f172a')
+                ax.set_facecolor('#0f172a')
                 ax.imshow(wordcloud, interpolation='bilinear')
                 ax.axis('off')
 
@@ -1004,22 +1169,22 @@ tab1, tab2 = st.tabs(["Single Review", "Batch Analysis"])
 
 # --- TAB 1: SINGLE REVIEW ---
 with tab1:
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
-    
+    # Text area lớn giống như trong hình
     text_input = st.text_area(
         "Enter your review",
-        placeholder="Paste a customer review here to analyze its sentiment across different aspects...\n\nExample: 'The hotel room was spacious and clean, but the breakfast was disappointing. Staff were friendly and helpful.'",
-        height=200,
+        value="I had a great experience staying at this hotel, where the atmosphere felt warm and welcoming from the moment I arrived. The rooms were clean, comfortable, and well-equipped, making it easy to relax after a long day. The staff were attentive and friendly, ensuring every part of my stay was smooth and enjoyable.",
+        height=120,
         label_visibility="collapsed",
     )
 
-    col_spacer, col_analyze, col_clear = st.columns([5, 1, 1])
-    with col_analyze:
-        analyze = st.button("Analyze", use_container_width=True)
-    with col_clear:
+    # Layout 2 nút nhỏ ở góc phải
+    col1, col2, col3 = st.columns([6, 1, 1])
+    with col1:
+        st.empty()  # Khoảng trống bên trái
+    with col2:
         clear = st.button("Clear", use_container_width=True, type="secondary")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
+    with col3:
+        analyze = st.button("Analyze", use_container_width=True, type="primary")
 
     if clear:
         st.rerun()

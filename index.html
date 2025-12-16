@@ -204,7 +204,7 @@
 
                 <div class="input-content">
                     <div id="textSection">
-                        <textarea id="reviewInput" placeholder="Enter your review here...">I had a great experience staying at this hotel. The rooms were clean, comfortable, and well-equipped.</textarea>
+                        <textarea id="reviewInput" placeholder="Enter your review here...">I had a great experience staying at this hotel, where the atmosphere felt warm and welcoming from the moment I arrived. The rooms were clean, comfortable, and well-equipped, making it easy to relax after a long day. The staff were attentive and friendly, ensuring every part of my stay was smooth and enjoyable.</textarea>
                     </div>
 
                     <div id="uploadSection" class="upload-zone">
@@ -274,10 +274,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="result-card col-span-12">
-                    <div class="card-header"><div class="card-icon">📊</div><div style="font-weight: 700;">Statistics</div></div>
-                    <table id="statsTable"><thead><tr><th>Category</th><th>Total</th><th>Positive</th><th>Neutral</th><th>Negative</th><th>Avg Score</th></tr></thead><tbody></tbody></table>
-                </div>
+                <!-- WORDCLOUD MOVED BEFORE STATISTICS -->
                 <div class="result-card dark-card col-span-6">
                     <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.1)"><div class="card-icon">🔤</div><div style="font-weight: 700;">Top Terms</div></div>
                     <div class="wordcloud-wrapper"><canvas id="termCanvas"></canvas></div>
@@ -285,6 +282,11 @@
                 <div class="result-card dark-card col-span-6">
                     <div class="card-header" style="border-bottom-color: rgba(255,255,255,0.1)"><div class="card-icon">💬</div><div style="font-weight: 700;">Top Opinions</div></div>
                     <div class="wordcloud-wrapper"><canvas id="opinionCanvas"></canvas></div>
+                </div>
+                <!-- STATISTICS NOW AFTER WORDCLOUD -->
+                <div class="result-card col-span-12">
+                    <div class="card-header"><div class="card-icon">📊</div><div style="font-weight: 700;">Statistics</div></div>
+                    <table id="statsTable"><thead><tr><th>Category</th><th>Total</th><th>Positive</th><th>Neutral</th><th>Negative</th><th>Avg Score</th></tr></thead><tbody></tbody></table>
                 </div>
                 <div class="result-card col-span-12">
                     <div class="card-header"><div class="card-icon">📋</div><div style="font-weight: 700;">Detailed Analysis</div></div>
@@ -362,12 +364,22 @@
                         const text = textArea.value.trim();
                         if (!text) throw new Error("Please enter a review!");
 
+                        console.log('Sending request to:', ANALYZE_URL);
                         const response = await fetch(ANALYZE_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ text: text })
+                        }).catch(err => {
+                            console.error('Fetch error:', err);
+                            throw new Error(`Network error: ${err.message}. Make sure API is running at http://localhost:8000`);
                         });
-                        if (!response.ok) throw new Error(`Server Error: ${response.status} ${response.statusText}`);
+                        
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            console.error('Error response:', errorText);
+                            throw new Error(`Server Error: ${response.status} ${response.statusText}`);
+                        }
                         dataToRender = await response.json();
                     
                     } else {
@@ -377,9 +389,13 @@
                         // QUAN TRỌNG: Tên biến 'file' phải khớp với backend Python (def upload(file: ...))
                         formData.append("file", selectedFile); 
 
+                        console.log('Uploading file to:', UPLOAD_URL);
                         const response = await fetch(UPLOAD_URL, {
                             method: 'POST',
                             body: formData // Browser tự động set Content-Type multipart/form-data
+                        }).catch(err => {
+                            console.error('Upload error:', err);
+                            throw new Error(`Network error: ${err.message}. Make sure API is running at http://localhost:8000`);
                         });
 
                         if (!response.ok) {
@@ -518,31 +534,102 @@
             }
 
             function renderWordClouds(data) {
+                // TERMS: Tách từng từ đơn
                 const terms = data.map(i => i.Term).filter(i => i).join(" ");
-                const opinions = data.map(i => i.Opinion).filter(i => i).join(" ");
-                drawCanvas('termCanvas', terms, 1.2);
-                drawCanvas('opinionCanvas', opinions, 1.0);
+                drawCanvasWords('termCanvas', terms, 1.2);
+                
+                // OPINIONS: Giữ nguyên cụm từ hoàn chỉnh
+                const opinions = data.map(i => i.Opinion).filter(i => i && i.trim().length > 0);
+                drawCanvasPhrases('opinionCanvas', opinions, 1.0);
             }
 
-            function drawCanvas(canvasId, textString, weightFactor) {
+            // Vẽ wordcloud cho TERMS (tách từng từ)
+            function drawCanvasWords(canvasId, textString, weightFactor) {
                 const canvas = document.getElementById(canvasId);
                 const parent = canvas.parentElement;
-                canvas.width = parent.offsetWidth; canvas.height = parent.offsetHeight;
+                canvas.width = parent.offsetWidth; 
+                canvas.height = parent.offsetHeight;
+                
                 const words = textString.split(/[\s,]+/).map(w => w.trim().toLowerCase()).filter(w => w.length > 1);
-                const freqMap = {}; words.forEach(w => freqMap[w] = (freqMap[w] || 0) + 1);
-                const list = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
+                const freqMap = {}; 
+                words.forEach(w => freqMap[w] = (freqMap[w] || 0) + 1);
+                let list = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
                 if (list.length === 0) return;
+                
+                list = list.slice(0, 40);
                 
                 const count = list.length;
                 let dynamicScale = count < 5 ? 6.0 : (count < 10 ? 4.5 : (count < 20 ? 3.0 : (count < 40 ? 1.8 : 1.2)));
-                const gridSize = Math.round(4 * canvas.width / 1024); 
+                const gridSize = Math.round(6 * canvas.width / 1024); 
 
                 WordCloud(canvas, {
-                    list: list, gridSize: gridSize, 
-                    weightFactor: function (size) { return Math.pow(size, 0.9) * 28 * weightFactor * dynamicScale * (canvas.width / 800); },
-                    fontFamily: 'Plus Jakarta Sans, sans-serif', fontWeight: '800',
+                    list: list, 
+                    gridSize: gridSize, 
+                    weightFactor: function (size) { 
+                        return Math.pow(size, 0.9) * 28 * weightFactor * dynamicScale * (canvas.width / 800); 
+                    },
+                    fontFamily: 'Plus Jakarta Sans, sans-serif', 
+                    fontWeight: '800',
                     color: () => WORDCLOUD_PALETTE[Math.floor(Math.random() * WORDCLOUD_PALETTE.length)],
-                    backgroundColor: 'transparent', shrinkToFit: true, origin: [canvas.width / 2, canvas.height / 2]
+                    backgroundColor: 'transparent', 
+                    shrinkToFit: true, 
+                    origin: [canvas.width / 2, canvas.height / 2],
+                    rotateRatio: 0,
+                    minRotation: 0,
+                    maxRotation: 0,
+                    drawOutOfBound: false,
+                    shuffle: false
+                });
+            }
+
+            // Vẽ wordcloud cho OPINIONS (giữ nguyên cụm từ)
+            function drawCanvasPhrases(canvasId, phrasesArray, weightFactor) {
+                const canvas = document.getElementById(canvasId);
+                const parent = canvas.parentElement;
+                canvas.width = parent.offsetWidth; 
+                canvas.height = parent.offsetHeight;
+                
+                // Đếm tần suất xuất hiện của từng CỤM TỪ
+                const freqMap = {}; 
+                phrasesArray.forEach(phrase => {
+                    // Loại bỏ dấu phẩy và các ký tự đặc biệt, chỉ giữ chữ, số, gạch nối và khoảng trắng
+                    const normalized = phrase.trim()
+                        .toLowerCase()
+                        .replace(/[,;:.!?()]/g, '') // Xóa dấu câu
+                        .replace(/\s+/g, ' ')       // Chuẩn hóa khoảng trắng
+                        .trim();
+                    
+                    if (normalized.length > 0) {
+                        freqMap[normalized] = (freqMap[normalized] || 0) + 1;
+                    }
+                });
+                
+                let list = Object.entries(freqMap).sort((a, b) => b[1] - a[1]);
+                if (list.length === 0) return;
+                
+                list = list.slice(0, 30); // Giới hạn 30 cụm từ phổ biến nhất
+                
+                const count = list.length;
+                let dynamicScale = count < 5 ? 5.0 : (count < 10 ? 3.8 : (count < 20 ? 2.5 : 1.5));
+                const gridSize = Math.round(8 * canvas.width / 1024); // Tăng gridSize cho cụm từ dài
+
+                WordCloud(canvas, {
+                    list: list, 
+                    gridSize: gridSize, 
+                    weightFactor: function (size) { 
+                        return Math.pow(size, 0.85) * 22 * weightFactor * dynamicScale * (canvas.width / 800); 
+                    },
+                    fontFamily: 'Plus Jakarta Sans, sans-serif', 
+                    fontWeight: '800',
+                    color: () => WORDCLOUD_PALETTE[Math.floor(Math.random() * WORDCLOUD_PALETTE.length)],
+                    backgroundColor: 'transparent', 
+                    shrinkToFit: true,
+                    origin: [canvas.width / 2, canvas.height / 2],
+                    rotateRatio: 0,
+                    minRotation: 0,
+                    maxRotation: 0,
+                    drawOutOfBound: false,
+                    shuffle: false
                 });
             }
         });

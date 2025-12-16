@@ -7,6 +7,7 @@ from transformers import (
     AutoModelForCausalLM,
     pipeline
 )
+import torch
 from llama_cpp import Llama
 from config import (
     MAX_NEW_TOKENS_SPLIT,
@@ -34,9 +35,7 @@ from Extract_Polarity_v2 import detect_polarity
 # ---------------- QWEN LOADER (TỐI ƯU) ---------------- #
 @st.cache_resource
 def load_qwen_model():
-    """
-    Load Qwen model GGUF với GPU acceleration.
-    """
+    # Load Qwen model GGUF với GPU acceleration.
     return Llama(
         model_path=QWEN_MODEL_PATH,
         n_gpu_layers=QWEN_N_GPU_LAYERS,
@@ -46,45 +45,25 @@ def load_qwen_model():
         verbose=DEBUG_MODE
     ), None  # Trả về None cho tokenizer vì không cần thiết
 
-def _normalize_id2label(raw_id2label):
-    """Chuẩn hóa nhãn để tránh hiển thị LABEL_x."""
-    normalized = {}
-    for key, label in raw_id2label.items():
-        if isinstance(label, str) and label.upper().startswith("LABEL_"):
-            try:
-                idx = int(label.split("_")[-1])
-                normalized[key] = DEFAULT_CATEGORY_LABELS.get(idx, label)
-            except ValueError:
-                normalized[key] = label
-        else:
-            normalized[key] = label
-    return normalized
-
 @st.cache_resource
 def load_category_model():
-    """Tải RoBERTa category model (phiên bản rút gọn)."""
     # Load Tokenizer & Model
     tokenizer = AutoTokenizer.from_pretrained(CATEGORY_MODEL_PATH, use_fast=USE_FAST_TOKENIZER)
     model = AutoModelForSequenceClassification.from_pretrained(
-        CATEGORY_MODEL_PATH
+        CATEGORY_MODEL_PATH,
+        torch_dtype=torch.bfloat16
     ).to(DEVICE).eval()
 
-    # Xử lý label: Nếu config có label thì normalize, nếu không dùng mặc định
-    config_labels = getattr(model.config, "id2label", None)
-    id2label = _normalize_id2label(config_labels) if config_labels else DEFAULT_CATEGORY_LABELS
-
-    return model, tokenizer, id2label
+    return model, tokenizer, DEFAULT_CATEGORY_LABELS
 
 # ---------------- POLARITY MODEL (DeBERTa) ---------------- #
 @st.cache_resource
 def load_polarity_model():
-    """
-    Load polarity model using the Slow tokenizer to avoid byte_fallback warnings.
-    """
+    # Load polarity model using the Slow tokenizer to avoid byte_fallback warnings.
     # 1. Load tokenizer explicitly with use_fast=False
     tokenizer = AutoTokenizer.from_pretrained(POLARITY_MODEL_PATH, use_fast=USE_FAST_TOKENIZER)
     # 2. Load model
-    model = AutoModelForSequenceClassification.from_pretrained(POLARITY_MODEL_PATH)
+    model = AutoModelForSequenceClassification.from_pretrained(POLARITY_MODEL_PATH, torch_dtype=torch.bfloat16).to(DEVICE)
     # 3. Pass both to pipeline
     polarity_classifier = pipeline(
         "text-classification",
@@ -104,7 +83,7 @@ def load_all_models():
     polarity_classifier = load_polarity_model()
     return {
         "qwen_model": qwen_model,
-        "qwen_tokenizer": qwen_tokenizer,  # Không cần với llama_cpp
+        "qwen_tokenizer": qwen_tokenizer,
         "cat_model": cat_model,
         "cat_tokenizer": cat_tokenizer,
         "cat_id2label": cat_id2label,

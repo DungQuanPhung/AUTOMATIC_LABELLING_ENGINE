@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODELS = {
     "visobert_absa": {
         "name": "distilbert/distilbert-base-uncased-finetuned-sst-2-english",
-        "local_path": os.path.join(BASE_DIR, "deberta-base-sst-2"),
+        "local_path": os.path.join(BASE_DIR, "polarity_model"),
     }
 }
 

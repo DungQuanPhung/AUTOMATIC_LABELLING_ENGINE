@@ -1,5 +1,5 @@
-# Sử dụng python 3.11 slim
-FROM python:3.11-slim
+# Sử dụng python 3.10.19 slim
+FROM python:3.10.19-slim
 
 # --- KHẮC PHỤC LỖI Ở ĐÂY ---
 # Cài đặt các công cụ biên dịch C++ cần thiết (gcc, g++, cmake, make)

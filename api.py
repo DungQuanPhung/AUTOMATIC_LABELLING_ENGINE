@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import pandas as pd
 import io
-import random  # Thêm thư viện random để sinh điểm số giả lập nếu thiếu
+import random
+import os
 
 # 1. Import trực tiếp pipeline xử lý
 import pipeline_ABSA as absa_pipeline
@@ -14,7 +15,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,  # Phải False khi dùng allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -85,7 +86,7 @@ class InputText(BaseModel):
 
 @app.get("/")
 def home():
-    return {"message": "Hotel ABSA Engine is Running"}
+    return {"message": "Hotel ABSA Engine is Running", "status": "ready"}
 
 @app.post("/analyze")
 def analyze(data: InputText):
