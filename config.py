@@ -6,13 +6,13 @@ import torch
 # Thư mục gốc của app
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Mô hình LLM chính (Qwen) - Load từ local
-QWEN_MODEL_PATH = os.path.join(BASE_DIR, "qwen2.5-7b-instruct-q2_k.gguf")
+# Mô hình LLM chính (Qwen)
+QWEN_MODEL_PATH = os.path.join(BASE_DIR, "qwen1_5-1_8b-chat-q4_k_m.gguf")
 
 # Mô hình Category (RoBERTa)
 CATEGORY_MODEL_PATH = os.path.join(BASE_DIR, "category_model")
 
-# Mô hình Polarity (DeBERTa) - Local path sau khi download
+# Mô hình Polarity (DeBERTa)
 POLARITY_MODEL_PATH = os.path.join(BASE_DIR, "polarity_model")
 
 # ============== CẤU HÌNH BATCH SIZE ==============
@@ -33,7 +33,7 @@ QWEN_N_GPU_LAYERS = -1
 QWEN_N_CTX = 2048
 
 # Số threads CPU cho processing
-QWEN_N_THREADS = 8
+QWEN_N_THREADS = 10
 
 # Inference optimization
 USE_FAST_TOKENIZER = True        # Dùng Rust-based fast tokenizers

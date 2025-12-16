@@ -7,6 +7,9 @@ def detect_polarity(clauses: List[Dict[str, Any]], polarity_classifier, batch_si
     Input: List dict chứa 'clause'.
     Output: List dict đã bổ sung 'polarity' và 'polarity_score'.
     """
+    # Define label mapping for polarity classification
+    id2label = {0: "Negative", 1: "Neutral", 2: "Positive"}
+    
     if not clauses:
         return clauses
 
@@ -33,10 +36,17 @@ def detect_polarity(clauses: List[Dict[str, Any]], polarity_classifier, batch_si
             if isinstance(pred, list):
                 pred = max(pred, key=lambda x: x['score'])
                 
-            label = pred.get('label', 'Neutral')
+            raw_label = pred.get('label', 'Neutral')
             score = pred.get('score', 0.0)
 
-            clauses[idx]["polarity"] = label.capitalize()
+            # Map LABEL_X sang nhãn thực tế
+            if raw_label.startswith('LABEL_'):
+                label_id = int(raw_label.split('_')[1])
+                label = id2label.get(label_id, raw_label)
+            else:
+                label = raw_label
+
+            clauses[idx]["polarity"] = label.capitalize() if label else "Neutral"
             clauses[idx]["polarity_score"] = round(float(score), 4)
             
     except Exception as e:

@@ -28,7 +28,7 @@ train_df = goal_df[required_cols].copy()
 test_df = llm_predict_df[required_cols].copy()
 
 # ====================== TOKENIZER + ENCODING ======================
-model_name = "roberta-base"
+model_name = "albert/albert-large-v2"
 tokenizer_cat = AutoTokenizer.from_pretrained(model_name)
 
 label_list = sorted(goal_df["category"].unique().tolist())
@@ -88,7 +88,7 @@ model_cat.to(device)
 
 # ====================== HUẤN LUYỆN ======================
 args = TrainingArguments(
-    output_dir="./roberta_lora_goal-",
+    output_dir="./category_model_v3",
     report_to="none",
     per_device_train_batch_size=8,       # ↑ tăng batch size giúp gradient ổn định hơn
     gradient_accumulation_steps=4,       # tích lũy gradient → giả lập batch lớn hơn (8×4=32)
@@ -107,7 +107,6 @@ trainer = Trainer(
     args=args,
     train_dataset=train_ds,
     eval_dataset=test_ds,
-    tokenizer=tokenizer_cat,
 )
 
 # ... (code trainer) ...
@@ -115,12 +114,12 @@ trainer.train()
 
 # 1. Merge LoRA weights vào base model và unload adapter
 # Cần gọi .base_model vì trainer.model là một đối tượng PeftModel
-merged_model = model_cat.merge_and_unload()
+model_cat = model_cat.merge_and_unload()
 
 print(f"Đang lưu mô hình ĐẦY ĐỦ (merged) vào thư mục: {args.output_dir}")
 
 # 2. Lưu mô hình đầy đủ (merged model)
-merged_model.save_pretrained(args.output_dir)
+model_cat.save_pretrained(args.output_dir)
 
 # 3. Lưu cả tokenizer vào cùng thư mục
 # (Rất quan trọng để app streamlit tải đúng)
